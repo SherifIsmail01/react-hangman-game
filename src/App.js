@@ -20,25 +20,36 @@ class App extends Component {
   }
 
   onGuessBtnClick(e) {
+    e.preventDefault();
     let randomIdx = Math.floor(Math.random() * this.state.words.length);
     this.setState({
-      answerWord: this.state.words[randomIdx].split('')
-    })
-    this.setState({
-      // letter: this.refs.guess.value,
       myGuesses: this.state.myGuesses.concat(this.refs.guess.value)
-    }, () => { this.state.answerWord.map( (letter) => {
-      if ((this.state.myGuesses.includes(letter)) === true) {
-        this.setState({ wordInPlay: letter})
-      }
-    })
+    }, () => { 
+      // myGuesses = ['o', 'a']
+      // 'potato'
+      // ['', 'o', '', '', '', 'o', '', '', '', 'a', '', '']
+      let newArray = this.state.answerWord.map(eachLetter => {
+        if (this.state.myGuesses.includes(eachLetter)) {
+          return eachLetter;
+        } else {
+          return '';
+        }
+      });
+      this.setState({
+        wordInPlay: newArray
+      })
+    //   this.state.answerWord.map( (letter) => {
+    //   if ((this.state.myGuesses.includes(letter)) === true) {
+    //     this.setState({ wordInPlay: this.state.myGuesses})
+    //   }
+     })
+    
       // get my secret word answerWord ['p', 'o', 't', 'a', 't', 'o']
       // map through each letter
       // return the letters that are inside this.state.myGuesses = ['o', 'a'] (use ".includes")
       // => ['', 'o', '', 'a', '', 'o']
       // this.setState({ wordInPlay: theAnswerIJustGot })
-
-    })
+    }
     // var result = 0;
     // this.state.answerWord.forEach((letter) => {
     //   if (letter === this.state.letter) {
@@ -46,8 +57,6 @@ class App extends Component {
     //   } 
     // })
     // return result;
-
-  }
 
   onButtonSubmit(e) {
     e.preventDefault();
@@ -58,6 +67,7 @@ class App extends Component {
     for (let i=0; i<lengthOfArr; i++) {
       emptyArr.push('');
     }
+    console.log(emptyArr);
     // ['', '', '', '', '', '']
     //console.log (emptyArr);
     this.setState({
@@ -80,14 +90,16 @@ class App extends Component {
         </div>
         <div>{ this.state.wordInPlay.map((letter) => {
                 return  <span> 
-                          <p>{letter == '' ? '_' : letter}</p> 
+                          <p>{letter === '' ? '_' : letter}</p> 
                         </span>
               }) }
         </div>
         <div>
-          <input ref="guess" type="text" placeholder="guess a letter"></input>
-          <button type="submit" onClick={ this.onGuessBtnClick }>Submit</button>
+        <form type="submit" onSubmit={ this.onGuessBtnClick }>
+          <input maxlength="1" ref="guess" type="text" placeholder="guess a letter"></input>
+          <button type="submit" >Submit</button>
           <div>{ this.state.myGuesses }</div>
+        </form>
         </div>
       </div>
     );
